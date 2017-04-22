@@ -1,18 +1,18 @@
-'use strict'
+'use strict';
 
-process.env.BABEL_ENV = 'renderer'
+process.env.BABEL_ENV = 'renderer';
 
-const path = require('path')
-const pkg = require('./app/package.json')
-const settings = require('./config.js')
-const webpack = require('webpack')
+const path     = require('path');
+const pkg      = require('./app/package.json');
+const settings = require('./config.js');
+const webpack  = require('webpack');
 
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 let rendererConfig = {
   devtool: '#eval-source-map',
-  devServer: { overlay: true },
+  devServer: {overlay: true},
   entry: {
     renderer: path.join(__dirname, 'app/src/renderer/main.js')
   },
@@ -33,7 +33,7 @@ let rendererConfig = {
       {
         test: /\.js$/,
         use: 'babel-loader',
-        include: [ path.resolve(__dirname, 'app/src/renderer') ],
+        include: [path.resolve(__dirname, 'app/src/renderer')],
         exclude: /node_modules/
       },
       {
@@ -106,7 +106,7 @@ let rendererConfig = {
     ]
   },
   target: 'electron-renderer'
-}
+};
 
 if (process.env.NODE_ENV !== 'production') {
   /**
@@ -125,7 +125,7 @@ if (process.env.NODE_ENV !== 'production') {
           }
         }
       }
-    )
+    );
   }
 }
 
@@ -133,7 +133,7 @@ if (process.env.NODE_ENV !== 'production') {
  * Adjust rendererConfig for production settings
  */
 if (process.env.NODE_ENV === 'production') {
-  rendererConfig.devtool = ''
+  rendererConfig.devtool = '';
 
   rendererConfig.plugins.push(
     new webpack.DefinePlugin({
@@ -147,7 +147,7 @@ if (process.env.NODE_ENV === 'production') {
         warnings: false
       }
     })
-  )
+  );
 }
 
-module.exports = rendererConfig
+module.exports = rendererConfig;

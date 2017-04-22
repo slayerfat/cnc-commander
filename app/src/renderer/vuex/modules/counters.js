@@ -5,10 +5,10 @@ const state = {
 };
 
 const mutations = {
-  [types.DECREMENT_MAIN_COUNTER] (state) {
+  [types.DECREMENT_MAIN_COUNTER](state) {
     state.main--;
   },
-  [types.INCREMENT_MAIN_COUNTER] (state) {
+  [types.INCREMENT_MAIN_COUNTER](state) {
     state.main++;
   }
 };

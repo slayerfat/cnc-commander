@@ -19,7 +19,13 @@ module.exports = {
     'generator-star-spacing': 0,
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
-    'no-multi-spaces': [2, {exceptions: {'VariableDeclarator': true}}],
-    'semi': ['error', 'always']
+    // allows spaces
+    'no-multi-spaces': 0,
+    // forces semicolon
+    'semi': ['error', 'always'],
+    // disallow spaces after method names
+    'space-before-function-paren': ['error', 'never'],
+    // allow assignment in return statements
+    'no-return-assign': 0
   }
-}
+};

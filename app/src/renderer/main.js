@@ -3,6 +3,7 @@ import Electron from 'vue-electron';
 import Resource from 'vue-resource';
 import Router from 'vue-router';
 import 'bulma/css/bulma.css';
+import 'font-awesome/css/font-awesome.css';
 
 import App from './App.vue';
 import routes from './routes';
@@ -14,10 +15,10 @@ Vue.config.debug = true;
 
 const router = new Router({
   scrollBehavior: () => ({y: 0}),
+  linkActiveClass: 'is-active',
   routes
 });
 
-/* eslint-disable no-new */
 new Vue({
   router,
   ...App
