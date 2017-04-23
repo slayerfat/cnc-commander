@@ -27,9 +27,11 @@ export class AbstractRepository {
   }
 
   /**
-   * Trims and escapes strings provided in arguments
+   * Trims and escapes strings provided in arguments.
+   *
    * @param {Object} data The data to sanitize
    * @returns {Object}
+   * @protected
    */
   _sanitize(data) {
     for (const key in data) {

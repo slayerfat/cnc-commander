@@ -57,14 +57,62 @@ export class UserRepository extends AbstractRepository {
     results.createdAt = timestamp;
     results.updatedAt = timestamp;
 
-    if (this._isUserInDb(results.name, results.email)) {
-      return Promise.reject(new UserExistError());
-    }
+    return new Promise((resolve, reject) => {
+      this._isUserInDb(results).then(response => {
+        if (response === true) {
+          return reject(new UserExistError());
+        }
 
-    return this._db.rel.save(this._name, results);
+        return this._db.rel.save(this._name, results);
+      });
+    });
   }
 
-  _isUserInDb(name, email) {
-    return true;
+  /**
+   * Finds a doc or group of docs according to the options.
+   *
+   * @param {Object} options The options object
+   * @returns {Promise}
+   */
+  find(options) {
+    return new Promise((resolve, reject) => {
+      // We find a plain result from the database
+      this._db.find(options).then(results => {
+        if (results.docs.length === 0) {
+          return resolve({users: []});
+        }
+
+        // we have to map the results to parse the raw IDs from the
+        // database into the relational plugin format
+        const arr = results.docs
+          .map(doc => this._db.rel.parseDocID(doc._id))
+          .map(doc => doc.id);
+
+        // finds the relational doc
+        return this._db.rel.find(this._name, arr);
+      }).then(results => resolve(results)).catch(err => reject(err));
+    });
+  }
+
+  /**
+   * Check if the given name or email are associated to an user.
+   *
+   * @param {Object} options
+   * @param {String} options.name
+   * @param {String} options.email
+   * @returns {Promise}
+   * @private
+   */
+  _isUserInDb(options) {
+    const selector = {
+      selector: {
+        '$or': [
+          {'data.name': options.name || ''},
+          {'data.email': options.email || ''}
+        ]
+      }
+    };
+
+    return this.find(selector).then(results => Promise.resolve((results.users.length === 1)));
   }
 }

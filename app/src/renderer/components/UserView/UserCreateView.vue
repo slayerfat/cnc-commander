@@ -4,12 +4,12 @@
     <div class="container">
       <div class="field">
         <label class="label">Nombre</label>
-        <p :class="{ 'control': true }">
+        <p class="control">
           <input type="text"
                  name="name"
                  v-model="name"
                  placeholder="Ingrese el nombre del usuario"
-                 v-validate="'required'"
+                 v-validate="'required|alpha_num|max:16'"
                  data-vv-as="Nombre"
                  :class="{'input': true, 'is-danger': errors.has('name') }">
         </p>
@@ -20,7 +20,7 @@
 
       <div class="field">
         <label class="label">Email</label>
-        <p :class="{ 'control': true }">
+        <p class="control">
           <input type="email"
                  name="email"
                  v-model="email"
@@ -36,12 +36,12 @@
 
       <div class="field">
         <label class="label">Clave</label>
-        <p :class="{ 'control': true }">
+        <p class="control">
           <input type="password"
                  name="password"
                  v-model="password"
                  placeholder="Por favor ingrese la clave"
-                 v-validate="'required'"
+                 v-validate="'required|alpha_dash|min:3|max:16'"
                  data-vv-as="Clave"
                  :class="{'input': true, 'is-danger': errors.has('password') }">
         </p>
@@ -52,12 +52,12 @@
 
       <div class="field">
         <label class="label">Confirmación de clave</label>
-        <p :class="{ 'control': true }">
+        <p class="control">
           <input type="password"
                  name="confirmation"
                  v-model="confirmation"
                  placeholder="Por favor ingrese nuevamente la clave"
-                 v-validate="'required|confirmed:password'"
+                 v-validate="'required|confirmed:password|alpha_dash|min:3|max:16'"
                  data-vv-as="Confirmación de clave"
                  :class="{'input': true, 'is-danger': errors.has('confirmation') }">
         </p>
@@ -103,7 +103,6 @@
         return (this.errors.any() || this.fields.clean());
       }
     },
-
     methods: {
       onSubmit() {
         UserRepository.getInstance()
@@ -117,6 +116,8 @@
               this.errors.add('name', 'El usuario ya existe.');
               return;
             }
+
+            this.errors.add('name', `Error inesperado, contacte al administrador de este sistema. '${err.message}'`);
 
             console.error(err);
           });
