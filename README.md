@@ -2,6 +2,11 @@
 
 > An electron-vue project
 
+## Validation
+
+- string validators and sanitizers https://github.com/chriso/validator.js
+- Form validation https://github.com/logaretm/vee-validate
+
 ## Build Setup
 
 ``` bash
