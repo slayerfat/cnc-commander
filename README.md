@@ -8,6 +8,11 @@
 - string sanitizer https://github.com/punkave/sanitize-html
 - Form validation https://github.com/logaretm/vee-validate
 
+## Database
+
+- relational pouch https://github.com/nolanlawson/relational-pouch
+
+
 ## Build Setup
 
 ``` bash

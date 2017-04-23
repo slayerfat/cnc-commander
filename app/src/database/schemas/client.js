@@ -1,6 +1,6 @@
 export default {
-  singular: 'user',
-  plural: 'users',
+  singular: 'client',
+  plural: 'clients',
   relations: {
     purchases: {hasMany: 'purchase'}
   }

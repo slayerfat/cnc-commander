@@ -2,8 +2,7 @@ import PouchDB from 'pouchdb';
 import relationalPouch from 'relational-pouch';
 import iDbAdapter from 'pouchdb-adapter-idb';
 import findAdapter from 'pouchdb-find';
-import userSchema from './schemas/user';
-import purchaseSchema from './schemas/purchase';
+import schemas from './schemas';
 
 // sets the relational Pouch as a plugin
 PouchDB.plugin(relationalPouch);
@@ -21,10 +20,7 @@ const db = PouchDB({
 });
 
 // set the relational schema
-db.setSchema([
-  userSchema,
-  purchaseSchema
-]);
+db.setSchema(schemas);
 
 db.createIndex({
   index: {fields: ['data.email', 'data.name']}
