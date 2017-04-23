@@ -114,6 +114,15 @@
           .catch(err => {
             if (err instanceof UserExistError) {
               this.errors.add('name', 'El usuario ya existe.');
+
+              return;
+            } else if (err instanceof Array) {
+              err.forEach(error => {
+                error.each(message => this.errors.add('name',
+                  `Error inesperado de validación, contacte al administrador de este sistema. '${message}'`)
+                );
+              });
+
               return;
             }
 

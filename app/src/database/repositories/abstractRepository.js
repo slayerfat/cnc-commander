@@ -5,6 +5,7 @@ export class AbstractRepository {
    *
    * @param {Object} options
    * @param {Object} options.validator A validator implementation
+   * @param {Object} options.sanitizer A sanitizer implementation
    * @param {Object} options.db The database connection
    */
   constructor(options) {
@@ -12,7 +13,7 @@ export class AbstractRepository {
       throw new TypeError('Cannot construct abstract class.');
     }
 
-    const {validator, db} = options;
+    const {validator, db, sanitizer} = options;
 
     if (validator === undefined || validator === null) {
       throw new Error('Validator is required.');
@@ -22,8 +23,13 @@ export class AbstractRepository {
       throw new Error('The database connection is required.');
     }
 
+    if (sanitizer === undefined || sanitizer === null) {
+      throw new Error('A sanitizer implementation is required.');
+    }
+
     this._validator = validator;
     this._db        = db;
+    this._sanitizer = sanitizer;
   }
 
   /**
@@ -36,8 +42,11 @@ export class AbstractRepository {
   _sanitize(data) {
     for (const key in data) {
       if (data.hasOwnProperty(key)) {
-        data[key] = this._validator.trim(data[key]);
-        data[key] = this._validator.escape(data[key]);
+        data[key] = data[key].trim();
+        data[key] = this._sanitizer(data[key], {
+          allowedTags: [],
+          allowedAttributes: []
+        });
       }
     }
 

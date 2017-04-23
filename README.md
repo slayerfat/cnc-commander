@@ -4,7 +4,8 @@
 
 ## Validation
 
-- string validators and sanitizers https://github.com/chriso/validator.js
+- string validators https://github.com/CharlGottschalk/approvejs
+- string sanitizer https://github.com/punkave/sanitize-html
 - Form validation https://github.com/logaretm/vee-validate
 
 ## Build Setup

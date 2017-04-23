@@ -1,7 +1,11 @@
 import db from '../connection';
-import validator from 'validator';
+import validator from 'approvejs';
+import sanitizeHtml from 'sanitize-html';
 import { AbstractRepository } from './abstractRepository';
 import { UserExistError } from '../exceptions/UserExistError';
+
+let instance;
+let started = false;
 
 export class UserRepository extends AbstractRepository {
 
@@ -12,11 +16,35 @@ export class UserRepository extends AbstractRepository {
    * @param {String=user} options.name The database model name (or schema name)
    * @param {Object} options.validator A validator implementation
    * @param {Object} options.db The database connection
+   * @param {Object} options.sanitizer A sanitizer implementation
    */
   constructor(options) {
+    if (instance || !started) {
+      throw new Error('Use getInstance() instead of new.');
+    }
+
     super(options);
 
     this._name = options.name || 'user';
+
+    this._validationRules = {
+      name: {
+        title: 'name',
+        required: true,
+        max: 16
+      },
+      email: {
+        title: 'email',
+        required: true,
+        email: true
+      },
+      password: {
+        title: 'password',
+        required: true,
+        min: 3,
+        max: 16
+      }
+    };
   }
 
   /**
@@ -25,13 +53,14 @@ export class UserRepository extends AbstractRepository {
    * @returns {UserRepository}
    */
   static getInstance() {
-    if (this._instance) {
-      return this._instance;
+    if (instance) {
+      return instance;
     }
 
-    this._instance = new UserRepository({db, validator});
+    started  = true;
+    instance = new UserRepository({db, validator, sanitizer: sanitizeHtml});
 
-    return this._instance;
+    return instance;
   }
 
   /**
@@ -54,18 +83,53 @@ export class UserRepository extends AbstractRepository {
   create(name, email, password) {
     const timestamp   = new Date();
     const results     = this._sanitize({name, email, password});
+    const errors      = this._validateInputs(results);
     results.createdAt = timestamp;
     results.updatedAt = timestamp;
 
     return new Promise((resolve, reject) => {
+      if (errors.length > 0) {
+        return reject(errors);
+      }
+
       this._isUserInDb(results).then(response => {
         if (response === true) {
           return reject(new UserExistError());
         }
 
-        return this._db.rel.save(this._name, results);
+        return resolve(this._db.rel.save(this._name, results));
       });
     });
+  }
+
+  /**
+   * Validates the inputs for the model and returns an array of errors.
+   *
+   * @param data
+   * @returns {Array}
+   * @private
+   */
+  _validateInputs(data) {
+    const errors = [];
+
+    for (const key in data) {
+      if (!data.hasOwnProperty(key)) {
+        continue;
+      }
+
+      const rules = this._validationRules[key];
+      if (!rules) {
+        continue;
+      }
+
+      const result = this._validator.value(data[key], rules);
+
+      if (result.approved === false) {
+        errors.push(result);
+      }
+    }
+
+    return errors;
   }
 
   /**
