@@ -72,7 +72,7 @@
         </p>
         <p class="control">
           <button class="button"
-                  :disabled="cantSummit"
+                  :disabled="!fields.passed()"
                   @click="onSubmit"
                   :class="{'is-primary': !errors.any(), 'is-danger': errors.any()}">Crear
           </button>
@@ -97,11 +97,6 @@
         confirmation: '',
         email: ''
       };
-    },
-    computed: {
-      cantSummit() {
-        return (this.errors.any() || this.fields.clean());
-      }
     },
     methods: {
       onSubmit() {
