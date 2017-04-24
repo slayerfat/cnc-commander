@@ -11,7 +11,7 @@ if (process.env.PLATFORM_TARGET === 'clean') {
 /**
  * Build webpack in production
  */
-function pack () {
+function pack() {
   console.log('\x1b[33mBuilding webpack in production mode...\n\x1b[0m');
   let pack = exec('npm run pack');
 
@@ -23,7 +23,7 @@ function pack () {
 /**
  * Use electron-packager to build electron app
  */
-function build () {
+function build() {
   let options = require('../config').building;
 
   console.log('\x1b[34mBuilding electron app(s)...\n\x1b[0m');
