@@ -86,8 +86,8 @@
 </template>
 
 <script>
-  import { UserRepository } from '../../../../database/repositories/UserRepository';
-  import { UserExistError } from '../../../../database/exceptions/UserExistError';
+  import { UserRepository } from '../../../database/repositories/UserRepository';
+  import { UserExistError } from '../../../database/exceptions/UserExistError';
 
   export default{
     data() {

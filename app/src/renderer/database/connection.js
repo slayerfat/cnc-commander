@@ -2,7 +2,7 @@ import PouchDB from 'pouchdb';
 import relationalPouch from 'relational-pouch';
 import iDbAdapter from 'pouchdb-adapter-idb';
 import findAdapter from 'pouchdb-find';
-import schemas from './schemas';
+import schemas from './schemas/index';
 
 // sets the relational Pouch as a plugin
 PouchDB.plugin(relationalPouch);

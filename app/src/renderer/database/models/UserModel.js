@@ -2,7 +2,7 @@ import { AbstractModel } from './AbstractModel';
 import { ApproveValidator } from '../../helpers/ApproveValidator';
 import approve from 'approvejs';
 
-const bcrypt  = require('bcryptjs');
+const bcrypt = require('bcryptjs');
 
 export class UserModel extends AbstractModel {
 
