@@ -1,6 +1,7 @@
 <template>
   <div id="#app">
     <navbar></navbar>
+    <notification></notification>
 
     <router-view></router-view>
 
@@ -12,11 +13,13 @@
   import store from 'renderer/vuex/store';
   import NavbarComponent from './components/layout/Navbar.vue';
   import FooterComponent from './components/layout/Footer.vue';
+  import NotificationComponent from './components/shared/Notification.vue';
 
   export default {
     components: {
       'navbar': NavbarComponent,
-      'footer-default': FooterComponent
+      'footer-default': FooterComponent,
+      'notification': NotificationComponent
     },
     store
   };
