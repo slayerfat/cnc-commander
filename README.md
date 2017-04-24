@@ -11,6 +11,7 @@
 ## Database
 
 - relational pouch https://github.com/nolanlawson/relational-pouch
+- bcrypt implementation https://www.npmjs.com/package/bcryptjs
 
 
 ## Build Setup

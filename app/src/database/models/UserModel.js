@@ -2,6 +2,8 @@ import { AbstractModel } from './AbstractModel';
 import { ApproveValidator } from '../../helpers/ApproveValidator';
 import approve from 'approvejs';
 
+const bcrypt  = require('bcryptjs');
+
 export class UserModel extends AbstractModel {
 
   /**
@@ -55,6 +57,29 @@ export class UserModel extends AbstractModel {
     return new UserModel(validator, name, email, password);
   }
 
+  /**
+   * Encrypts and returns the hashed password string with bcrypt.
+   *
+   * @param {String} password
+   * @returns {String} The password hash
+   * @private
+   */
+  static _encryptPassword(password) {
+    return bcrypt.hashSync(password, 10);
+  }
+
+  /**
+   * Compares a password with a hash, returns true if they do.
+   *
+   * @param {String} password
+   * @param {String} hash
+   * @returns {Boolean}
+   * @private
+   */
+  static _isPasswordMatch(password, hash) {
+    return bcrypt.compareSync(password, hash);
+  }
+
   setName(input) {
     this._validated = false;
 
@@ -75,14 +100,19 @@ export class UserModel extends AbstractModel {
     return this._email;
   }
 
+  /**
+   * Sets the model password with bcrypt encryption.
+   *
+   * @param {String} input
+   */
   setPassword(input) {
-    this._validated = false;
-
-    this._password = UserModel._genericInputSanitation(input);
+    this._validated        = false;
+    this._password         = input;
+    this._enryptedPassword = UserModel._encryptPassword(UserModel._genericInputSanitation(input));
   }
 
   getPassword() {
-    return this._password;
+    return this._enryptedPassword;
   }
 
   getCreatedAt() {
