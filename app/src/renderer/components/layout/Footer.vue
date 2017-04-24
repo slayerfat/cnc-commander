@@ -1,24 +1,22 @@
 <template>
-  <div>
-    <footer class="footer">
-      <div class="container">
-        <div class="content has-text-centered">
-          <p>
-            <strong>CNC Commander</strong> hecho por
-            <a href="http://twitter.com/slayerfat">slayerfat</a>
-          </p>
-          <p>
-            {{ date }}
-          </p>
-          <p>
-            <a class="icon" href="https://github.com/slayerfat/cnc-commander">
-              <i class="fa fa-github"></i>
-            </a>
-          </p>
-        </div>
+  <footer class="footer">
+    <div class="container">
+      <div class="content has-text-centered">
+        <p>
+          <strong>CNC Commander</strong> hecho por
+          <a href="http://twitter.com/slayerfat">slayerfat</a>
+        </p>
+        <p>
+          {{ date }}
+        </p>
+        <p>
+          <a class="icon" href="https://github.com/slayerfat/cnc-commander">
+            <i class="fa fa-github"></i>
+          </a>
+        </p>
       </div>
-    </footer>
-  </div>
+    </div>
+  </footer>
 </template>
 
 <script>
@@ -31,3 +29,9 @@
     }
   };
 </script>
+
+<style>
+  .footer {
+    background: linear-gradient(whitesmoke, white);
+  }
+</style>
