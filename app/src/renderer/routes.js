@@ -2,17 +2,17 @@ export default [
   {
     path: '/',
     name: 'landing-page',
-    component: require('components/LandingPageView.vue')
+    component: require('components/views/landingPage/LandingPage.vue')
   },
   {
     path: '/users',
     name: 'users.index',
-    component: require('components/UserView/UserIndexView.vue')
+    component: require('components/views/user/UserIndex.vue')
   },
   {
     path: '/users/create',
     name: 'users.create',
-    component: require('components/UserView/UserCreateView.vue')
+    component: require('components/views/user/UserCreate.vue')
   },
   {
     path: '*',

@@ -34,7 +34,7 @@
 </template>
 
 <script>
-  import { UserRepository } from '../../../database/repositories/UserRepository';
+  import { UserRepository } from '../../../../database/repositories/UserRepository';
 
   export default {
     data() {

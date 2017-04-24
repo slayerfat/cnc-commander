@@ -10,8 +10,8 @@
 
 <script>
   import store from 'renderer/vuex/store';
-  import NavbarComponent from './components/Navbar.vue';
-  import FooterComponent from './components/Footer.vue';
+  import NavbarComponent from './components/layout/Navbar.vue';
+  import FooterComponent from './components/layout/Footer.vue';
 
   export default {
     components: {
