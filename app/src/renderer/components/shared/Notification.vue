@@ -1,9 +1,12 @@
 <template>
-  <div class="notification" v-show="open" :class="classType">
+  <div class="notification" v-show="isVisible" :class="classType">
     <button class="delete" @click="onClickClose"></button>
-    <slot>
-      Error Inesperado, por favor contacte al administrador del sistema.
-    </slot>
+    <span v-if="!message">
+      <slot>
+        Error Inesperado, por favor contacte al administrador del sistema.
+      </slot>
+    </span>
+    <span>{{ message }}</span>
   </div>
 </template>
 
@@ -17,13 +20,18 @@
       duration: {
         'default': 10000,
         type: Number
+      },
+      open: {
+        'default': true,
+        type: Boolean
       }
     },
     name: 'notification',
     data() {
       return {
-        open: true,
-        timer: null
+        timer: null,
+        isOpen: null,
+        message: null
       };
     },
     computed: {
@@ -40,19 +48,34 @@
           default:
             return '';
         }
+      },
+      isVisible() {
+        return this.isOpen;
       }
     },
     methods: {
       onClickClose() {
-        this.open = false;
+        this.close();
       },
       close() {
         clearTimeout(this.timer);
-        this.open = false;
+        this.timer  = null;
+        this.isOpen = false;
       }
     },
     created() {
-      this.timer = setTimeout(() => this.close(), this.duration);
+      this.isOpen = this.open;
+      this.timer  = setTimeout(() => this.close(), this.duration);
+
+      this.$root.$on('main-notification', message => {
+        if (this.timer !== null) {
+          this.close();
+        }
+
+        this.message = message;
+        this.isOpen  = true;
+        this.timer   = setTimeout(() => this.close(), this.duration);
+      });
     }
   };
 </script>

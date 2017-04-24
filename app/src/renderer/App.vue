@@ -1,7 +1,7 @@
 <template>
   <div id="#app">
     <navbar></navbar>
-    <notification></notification>
+    <notification v-bind:open="false"></notification>
 
     <router-view></router-view>
 

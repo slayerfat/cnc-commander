@@ -103,7 +103,7 @@
         UserRepository.getInstance()
           .create(this.name, this.email, this.password)
           .then(() => {
-            this.$root.$emit('form-submit-success', 'Nuevo Usuario');
+            this.$root.$emit('main-notification', 'Nuevo Usuario creado exitosamente.');
             this.$router.push('/users');
           })
           .catch(err => {
