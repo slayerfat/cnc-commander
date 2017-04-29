@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import LandingPageView from 'renderer/components/LandingPageView';
+import LandingPageView from 'renderer/components/views/landingPage/LandingPage';
 
 describe('LandingPageView.vue', () => {
   it('should render correct contents', () => {
@@ -8,6 +8,6 @@ describe('LandingPageView.vue', () => {
       render: h => h(LandingPageView)
     }).$mount();
 
-    expect(vm.$el.querySelector('h1').textContent).to.contain('Welcome.');
+    expect(vm.$el.querySelector('h1').textContent).to.contain('CNC commander');
   });
 });

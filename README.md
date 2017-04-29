@@ -4,7 +4,7 @@
 
 ## Validation
 
-- string validators https://github.com/CharlGottschalk/approvejs
+- string validators https://github.com/skaterdav85/validatorjs
 - string sanitizer https://github.com/punkave/sanitize-html
 - Form validation https://github.com/logaretm/vee-validate
 
@@ -13,6 +13,20 @@
 - relational pouch https://github.com/nolanlawson/relational-pouch
 - bcrypt implementation https://www.npmjs.com/package/bcryptjs
 
+## Tests
+
+To run mocha with es6 on Webstorm we must set the extra mocha options to `--compilers js:babel-core/register` 
+(set the mocha defaults to the same with working directory).
+
+Inside the .babelrc file (or put in package.json)
+
+```json
+{
+  "presets": [
+    "es2015"
+  ]
+}
+```
 
 ## Build Setup
 

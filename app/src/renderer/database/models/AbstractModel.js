@@ -1,4 +1,5 @@
 import sanitizeHTML from 'sanitize-html';
+import { ValidationError } from '../exceptions/ValidationError';
 
 export class AbstractModel {
   constructor(validator) {
@@ -6,9 +7,14 @@ export class AbstractModel {
       throw new TypeError('Cannot construct abstract class.');
     }
 
+    if (!(validator instanceof Object) || validator instanceof Array) {
+      throw new TypeError('Validator must be an object.');
+    }
+
     this._validator = validator;
     this._errors    = [];
     this._validated = false;
+    this._mustImplementError = 'This method needs to be implemented';
   }
 
   /**
@@ -39,12 +45,50 @@ export class AbstractModel {
   }
 
   /**
+   * Checks a given input for type and throws a ValidationError if invalid.
+   *
+   * @param {*} input The user's input.
+   * @param {String} name The name of the attribute.
+   * @param {String} type The input type expected.
+   * @param {Boolean} required True if input is required.
+   * @throws ValidationError
+   */
+  static _checkInput(input, name, type = null, required = true) {
+    if (required && (input === undefined || input === null)) {
+      throw new ValidationError(`No ${name} was given.`);
+    } else if (type !== null && typeof input !== type) {
+      throw new ValidationError(`The name is expected to be a string, ${typeof input} was given.`);
+    }
+  }
+
+  /**
    * Gets the simplest representation of this class instance, used by the Database.
    *
    * @returns {Object}
    */
   getSimpleObject() {
-    throw new Error('This method needs to be implemented');
+    throw new Error(this._mustImplementError);
+  }
+
+  /**
+   * Validates the inputs for the model and sets an array of errors.
+   *
+   * @protected
+   */
+  _validate() {
+    throw new Error(this._mustImplementError);
+  }
+
+  /**
+   * Returns the set of rules associated with the given key or name.
+   *
+   * @param key The key inside the validationRules object.
+   *
+   * @returns {Object}
+   * @protected
+   */
+  _getValidationRules(key) {
+    throw new Error(this._mustImplementError);
   }
 
   /**
@@ -75,45 +119,20 @@ export class AbstractModel {
    * @returns {Array}
    */
   getErrors() {
+    if (!this._validated) {
+      this._validate();
+    }
+
     return this._errors;
   }
 
   /**
-   * Validates the inputs for the model and returns an array of errors.
+   * Resets the internal validation flag and errors array.
    *
-   * @returns {Array}
    * @protected
    */
-  _validate() {
-    for (const key in this) {
-      if (!this.hasOwnProperty(key)) {
-        continue;
-      }
-
-      const rules = this._getValidationRules(key);
-      if (!rules) {
-        continue;
-      }
-
-      const result = this._validator.validate(this[key], rules);
-
-      if (result.approved === false) {
-        this._errors.push(result);
-      }
-    }
-
-    this._validated = true;
-  }
-
-  /**
-   * Returns the set of rules associated with the given key or name.
-   *
-   * @param key The key inside the validationRules object.
-   *
-   * @returns {Object}
-   * @protected
-   */
-  _getValidationRules(key) {
-    throw new Error('This method needs to be implemented.');
+  _resetValidationState() {
+    this._validated = false;
+    this._errors    = [];
   }
 }

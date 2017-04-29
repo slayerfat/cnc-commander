@@ -4,7 +4,6 @@
   "description": "An electron-vue project",
   "main": "./dist/main.js",
   "dependencies": {
-    "approvejs": "^3.1.1",
     "babel-runtime": "^6.23.0",
     "bcryptjs": "^2.4.3",
     "bulma": "^0.4.0",
@@ -14,6 +13,7 @@
     "pouchdb-find": "^6.2.0",
     "relational-pouch": "^1.4.5",
     "sanitize-html": "^1.14.1",
+    "validatorjs": "^3.12.0",
     "vee-validate": "^2.0.0-beta.25",
     "vue": "^2.1.10",
     "vue-electron": "^1.0.6",

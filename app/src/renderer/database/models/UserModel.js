@@ -1,6 +1,6 @@
 import { AbstractModel } from './AbstractModel';
-import { ApproveValidator } from '../../helpers/ApproveValidator';
-import approve from 'approvejs';
+import { ValidationError } from '../exceptions/ValidationError';
+import { ValidatorJsValidator } from '../../helpers/ValidatorJsValidator';
 
 const bcrypt = require('bcryptjs');
 
@@ -13,34 +13,22 @@ export class UserModel extends AbstractModel {
    * @param {String} name The user's name
    * @param {String} email The user's email
    * @param {String} password The user's password
+   * @param {Date=} createdAt The user model created date
+   * @param {Date=} updatedAt The user model updated date
    */
-  constructor(validator, name, email, password) {
+  constructor(validator, name, email, password, createdAt, updatedAt) {
     super(validator);
 
-    this.setName(name);
-    this.setEmail(email);
-    this.setPassword(password);
-
-    const timestamp = new Date();
-    this._createdAt = this._updatedAt = timestamp;
+    this.name      = name;
+    this.email     = email;
+    this.password  = password;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
 
     this._validationRules = {
-      _name: {
-        title: 'name',
-        required: true,
-        max: 16
-      },
-      _email: {
-        title: 'email',
-        required: true,
-        email: true
-      },
-      _password: {
-        title: 'password',
-        required: true,
-        min: 3,
-        max: 16
-      }
+      name: 'alpha_num|required|max:16',
+      email: 'email|required',
+      password: 'between: 3, 32'
     };
   }
 
@@ -53,7 +41,7 @@ export class UserModel extends AbstractModel {
    * @returns {UserModel}
    */
   static getNewInstance(name, email, password) {
-    const validator = new ApproveValidator(approve);
+    const validator = new ValidatorJsValidator();
     return new UserModel(validator, name, email, password);
   }
 
@@ -62,9 +50,8 @@ export class UserModel extends AbstractModel {
    *
    * @param {String} password
    * @returns {String} The password hash
-   * @private
    */
-  static _encryptPassword(password) {
+  static encryptPassword(password) {
     return bcrypt.hashSync(password, 10);
   }
 
@@ -74,29 +61,44 @@ export class UserModel extends AbstractModel {
    * @param {String} password
    * @param {String} hash
    * @returns {Boolean}
-   * @private
    */
-  static _isPasswordMatch(password, hash) {
+  static isPasswordMatch(password, hash) {
     return bcrypt.compareSync(password, hash);
   }
 
-  setName(input) {
-    this._validated = false;
+  /**
+   * @param {String} input
+   */
+  set name(input) {
+    this._resetValidationState();
+
+    AbstractModel._checkInput(input, 'name', 'string');
 
     this._name = UserModel._genericInputSanitation(input);
   }
 
-  getName() {
+  /**
+   * @returns {String}
+   */
+  get name() {
     return this._name;
   }
 
-  setEmail(input) {
-    this._validated = false;
+  /**
+   * @param {String} input
+   */
+  set email(input) {
+    this._resetValidationState();
+
+    AbstractModel._checkInput(input, 'name', 'string');
 
     this._email = UserModel._genericInputSanitation(input);
   }
 
-  getEmail() {
+  /**
+   * @returns {String}
+   */
+  get email() {
     return this._email;
   }
 
@@ -105,22 +107,79 @@ export class UserModel extends AbstractModel {
    *
    * @param {String} input
    */
-  setPassword(input) {
-    this._validated        = false;
-    this._password         = input;
-    this._enryptedPassword = UserModel._encryptPassword(UserModel._genericInputSanitation(input));
+  set password(input) {
+    this._resetValidationState();
+
+    AbstractModel._checkInput(input, 'password', 'string', false);
+
+    if (input.length === 60) {
+      this.encryptedPassword = input;
+
+      return;
+    }
+
+    this._password          = input;
+    this._encryptedPassword = UserModel.encryptPassword(UserModel._genericInputSanitation(input));
   }
 
-  getPassword() {
-    return this._enryptedPassword;
+  /**
+   * @returns {String}
+   */
+  get password() {
+    return this._encryptedPassword;
   }
 
-  getCreatedAt() {
+  /**
+   * Sets the encrypted password.
+   *
+   * @param {String} password
+   */
+  set encryptedPassword(password) {
+    if (!password) {
+      throw new ValidationError('Password cannot be empty or null.');
+    } else if (password.length !== 60) {
+      throw new ValidationError('Invalid password length.');
+    }
+    this._encryptedPassword = password;
+  }
+
+  /**
+   * @returns {String}
+   */
+  get encryptedPassword() {
+    return this._encryptedPassword;
+  }
+
+  /**
+   * @return {Date}
+   */
+  get createdAt() {
     return this._createdAt;
   }
 
-  getUpdatedAt() {
+  /**
+   * Sets the created at.
+   *
+   * @param {Date} date
+   */
+  set createdAt(date) {
+    this._createdAt = date || new Date();
+  }
+
+  /**
+   * @return {Date}
+   */
+  get updatedAt() {
     return this._updatedAt;
+  }
+
+  /**
+   * Sets the updated at.
+   *
+   * @param {Date} date
+   */
+  set updatedAt(date) {
+    this._updatedAt = date || new Date();
   }
 
   /**
@@ -130,23 +189,39 @@ export class UserModel extends AbstractModel {
    */
   getSimpleObject() {
     return Object.assign({}, {
-      name: this.getName(),
-      email: this.getEmail(),
-      password: this.getPassword(),
-      createdAt: this.getCreatedAt(),
-      updatedAt: this.getUpdatedAt()
+      name: this.name,
+      email: this.email,
+      password: this.password,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt
     });
   }
 
   /**
-   * Returns the set of rules associated with the given key or name.
+   * Validates the inputs for the model and sets an array of errors.
    *
-   * @param key The key inside the validationRules object.
-   *
-   * @returns {Object}
    * @protected
    */
-  _getValidationRules(key) {
-    return this._validationRules[key];
+  _validate() {
+    const validation = this._validator.validate({
+      name: this.name,
+      email: this.email,
+      password: this._password
+    }, this._validationRules);
+
+    validation.setAttributeNames({
+      name: 'Nombre',
+      email: 'Email',
+      password: 'Clave'
+    });
+
+    if (validation.fails()) {
+      const errors = validation.errors.all();
+      Object.keys(errors).forEach(name => {
+        errors[name].forEach(error => this._errors.push(error));
+      });
+    }
+
+    this._validated = true;
   }
 }

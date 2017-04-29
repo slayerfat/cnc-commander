@@ -1,5 +1,8 @@
 {
   "comments": false,
+  "presets": [
+    "es2015"
+  ],
   "env": {
     "testing-unit": {
       "presets": [
