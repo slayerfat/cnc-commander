@@ -319,8 +319,8 @@ describe('User Model', () => {
       const hash        = UserModel.encryptPassword('test');
       const anotherHash = UserModel.encryptPassword('another');
 
-      expect(UserModel.isPasswordMatch('test', hash)).to.be.true;
-      expect(UserModel.isPasswordMatch('test', anotherHash)).to.be.false;
+      expect(UserModel.passwordMatch('test', hash)).to.be.true;
+      expect(UserModel.passwordMatch('test', anotherHash)).to.be.false;
     });
   });
 });

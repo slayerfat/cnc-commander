@@ -2,9 +2,10 @@ import { expect } from 'chai';
 import { UserRepository } from '../../../../../app/src/renderer/database/repositories/UserRepository';
 import connection from '../../../../../app/src/renderer/database/connection';
 import { UserExistError } from '../../../../../app/src/renderer/database/exceptions/UserExistError';
+import { UserModel } from '../../../../../app/src/renderer/database/models/UserModel';
 
 let db = connection('test', 'memory');
-/** @type UserRepository */
+/** @type UserRepository repo */
 let repo;
 
 describe('User Repository', () => {
@@ -25,22 +26,19 @@ describe('User Repository', () => {
   });
 
   it('should not be instantiated', () => {
-    let error;
-    let obj;
-
-    try {
-      obj = new UserRepository();
-    } catch (err) {
-      error = err;
-    }
-
-    expect(obj).to.not.be.an('object');
-    expect(error).to.be.instanceof(Error);
-    expect(error.message).to.eq('Use getInstance() instead of new.');
+    expect(() => new UserRepository()).to.throw(Error, /Use getInstance\(\) instead of new./);
   });
 
   it('should be the same instance', () => {
     expect(UserRepository.getInstance()).to.equal(repo);
+  });
+
+  describe('getInstance()', () => {
+    [true, 1, 'string', [], {}].forEach(type => {
+      it(`should throw error if invalid ${typeof type} is given`, () => {
+        expect(() => UserRepository.getInstance(type)).to.throw(TypeError);
+      });
+    });
   });
 
   describe('findById()', () => {
@@ -261,6 +259,107 @@ describe('User Repository', () => {
             done();
           }).catch(err => done(err));
       });
+    });
+  });
+
+  describe('update()', () => {
+    it('should update existing document', done => {
+      repo.create('test', 'test@test.com', 'test')
+        .then(results => repo.update(results.id, 'changed', 'changed@test.com', 'test'))
+        .then(results => {
+          expect(results).to.be.instanceof(Object);
+          expect(results).to.have.property('name').that.equal('changed');
+          expect(results).to.have.property('email').that.equal('changed@test.com');
+          expect(results).to.have.property('password').with.lengthOf(60);
+          expect(UserModel.passwordMatch('test', results.password)).to.be.true;
+
+          return db.rel.find('user');
+        })
+        .then(results => {
+          expect(results).to.be.instanceof(Object).with.property('users');
+          expect(results.users).to.be.instanceof(Array).with.lengthOf(1);
+
+          done();
+        }).catch(err => done(err));
+    });
+
+    describe('document should update itself', () => {
+      it('should allow only name change', done => {
+        repo.create('test', 'test@test.com', 'test')
+          .then(results => repo.update(results.id, 'updated', 'test@test.com', 'test'))
+          .then(results => {
+            expect(results).to.be.instanceof(Object);
+            expect(results).to.have.property('name').that.equal('updated');
+            expect(results).to.have.property('email').that.equal('test@test.com');
+            expect(results).to.have.property('password').with.lengthOf(60);
+
+            return db.rel.find('user');
+          })
+          .then(results => {
+            expect(results).to.be.instanceof(Object).with.property('users');
+            expect(results.users).to.be.instanceof(Array).with.lengthOf(1);
+
+            done();
+          }).catch(err => done(err));
+      });
+
+      it('should allow only email change', done => {
+        repo.create('test', 'test@test.com', 'test')
+          .then(results => repo.update(results.id, 'test', 'updated@test.com', 'test'))
+          .then(results => {
+            expect(results).to.be.instanceof(Object);
+            expect(results).to.have.property('name').that.equal('test');
+            expect(results).to.have.property('email').that.equal('updated@test.com');
+            expect(results).to.have.property('password').with.lengthOf(60);
+
+            return db.rel.find('user');
+          })
+          .then(results => {
+            expect(results).to.be.instanceof(Object).with.property('users');
+            expect(results.users).to.be.instanceof(Array).with.lengthOf(1);
+
+            done();
+          }).catch(err => done(err));
+      });
+
+      it('should allow only email change', done => {
+        repo.create('test', 'test@test.com', 'test')
+          .then(results => repo.update(results.id, 'test', 'test@test.com', 'updated'))
+          .then(results => {
+            expect(results).to.be.instanceof(Object);
+            expect(results).to.have.property('name').that.equal('test');
+            expect(results).to.have.property('email').that.equal('test@test.com');
+            expect(results).to.have.property('password').with.lengthOf(60);
+            expect(UserModel.passwordMatch('updated', results.password)).to.be.true;
+
+            return db.rel.find('user');
+          })
+          .then(results => {
+            expect(results).to.be.instanceof(Object).with.property('users');
+            expect(results.users).to.be.instanceof(Array).with.lengthOf(1);
+
+            done();
+          }).catch(err => done(err));
+      });
+    });
+
+    it('should update existing document if no password is given', done => {
+      repo.create('test', 'test@test.com', 'test')
+        .then(results => repo.update(results.id, 'changed', 'changed@test.com'))
+        .then(results => {
+          expect(results).to.be.instanceof(Object);
+          expect(results).to.have.property('name').that.equal('changed');
+          expect(results).to.have.property('email').that.equal('changed@test.com');
+          expect(results).to.have.property('password').with.lengthOf(60);
+
+          return db.rel.find('user');
+        })
+        .then(results => {
+          expect(results).to.be.instanceof(Object).with.property('users');
+          expect(results.users).to.be.instanceof(Array).with.lengthOf(1);
+
+          done();
+        }).catch(err => done(err));
     });
   });
 });

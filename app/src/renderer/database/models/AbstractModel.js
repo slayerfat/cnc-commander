@@ -57,7 +57,7 @@ export class AbstractModel {
     if (required && (input === undefined || input === null)) {
       throw new ValidationError(`No ${name} was given.`);
     } else if (type !== null && typeof input !== type) {
-      throw new ValidationError(`The name is expected to be a string, ${typeof input} was given.`);
+      throw new ValidationError(`The ${name} is expected to be a string, ${typeof input} was given.`);
     }
   }
 

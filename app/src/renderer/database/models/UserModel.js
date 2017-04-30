@@ -62,7 +62,7 @@ export class UserModel extends AbstractModel {
    * @param {String} hash
    * @returns {Boolean}
    */
-  static isPasswordMatch(password, hash) {
+  static passwordMatch(password, hash) {
     return bcrypt.compareSync(password, hash);
   }
 
@@ -126,7 +126,7 @@ export class UserModel extends AbstractModel {
    * @returns {String}
    */
   get password() {
-    return this._encryptedPassword;
+    return this.encryptedPassword;
   }
 
   /**
@@ -185,7 +185,7 @@ export class UserModel extends AbstractModel {
   /**
    * Gets the simplest representation of this class instance, used by the Database.
    *
-   * @returns {Object}
+   * @returns {{name: String, email: String, password: String, createdAt: Date, updatedAt: Date}}
    */
   getSimpleObject() {
     return Object.assign({}, {
