@@ -10,6 +10,7 @@
     "font-awesome": "^4.7.0",
     "pouchdb": "^6.2.0",
     "pouchdb-adapter-idb": "^6.2.0",
+    "pouchdb-adapter-memory": "^6.2.0",
     "pouchdb-find": "^6.2.0",
     "relational-pouch": "^1.4.5",
     "sanitize-html": "^1.14.1",

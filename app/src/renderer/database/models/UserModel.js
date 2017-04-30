@@ -25,7 +25,7 @@ export class UserModel extends AbstractModel {
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
 
-    this._validationRules = {
+    this.validationRules = this._defaultValidationRules = {
       name: 'alpha_num|required|max:16',
       email: 'email|required',
       password: 'between: 3, 32'
@@ -198,11 +198,85 @@ export class UserModel extends AbstractModel {
   }
 
   /**
+   * Returns the default validation rules of this model.
+   *
+   * @returns {{name: string, email: string, password: string}}
+   */
+  get defaultValidationRules() {
+    return this._defaultValidationRules;
+  }
+
+  /**
+   * Sets the validation rules of this model.
+   *
+   * @param {Object} data
+   */
+  set validationRules(data) {
+    if (!(data instanceof Object) || data instanceof Array) {
+      throw new TypeError(`Invalid validation rules, Object expected ${typeof data} given.`);
+    }
+
+    const keys    = Object.keys(data);
+    const results = keys.filter(key => key === 'name' || key === 'email' || key === 'password');
+
+    if (results.length !== 3) {
+      throw new TypeError('Invalid validation rules, name, email and password are required.');
+    }
+
+    results.forEach(key => {
+      const type = typeof data[key];
+
+      if (type !== 'string') {
+        throw new TypeError(`Invalid validation rules, rules must be string, ${type} given.`);
+      }
+    });
+
+    const {name, password, email} = data;
+
+    this._validationRules = {name, password, email};
+    this._validated       = false;
+  }
+
+  /**
+   * Returns the current validation rules.
+   *
+   * @returns {Object}
+   */
+  get validationRules() {
+    return this._validationRules;
+  }
+
+  /**
    * Validates the inputs for the model and sets an array of errors.
    *
    * @protected
    */
   _validate() {
+    this._checkValidator();
+    this._markAsValidated();
+  }
+
+  /**
+   * Set internal state related to validation event.
+   *
+   * @private
+   */
+  _markAsValidated() {
+    Object.keys(this.defaultValidationRules).forEach(key => {
+      if (this.validationRules[key] !== this.defaultValidationRules[key]) {
+        this.validationRules = this.defaultValidationRules;
+      }
+    });
+
+    this._validated = true;
+  }
+
+  /**
+   * Checks the internal validator, and changes the error bag if errors are found.
+   *
+   * @private
+   */
+  _checkValidator() {
     const validation = this._validator.validate({
       name: this.name,
       email: this.email,
@@ -221,7 +295,5 @@ export class UserModel extends AbstractModel {
         errors[name].forEach(error => this._errors.push(error));
       });
     }
-
-    this._validated = true;
   }
 }

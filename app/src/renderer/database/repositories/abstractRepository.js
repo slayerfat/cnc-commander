@@ -19,4 +19,22 @@ export class AbstractRepository {
 
     this._db = db;
   }
+
+  /**
+   * Gets the underlying database.
+   *
+   * @returns {Object|*}
+   */
+  get database() {
+    return this._db;
+  }
+
+  /**
+   * Gets the underlying reletional database.
+   *
+   * @returns {Object|*}
+   */
+  get relationalDatabase() {
+    return this._db.rel;
+  }
 }

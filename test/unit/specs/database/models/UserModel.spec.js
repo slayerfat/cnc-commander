@@ -18,7 +18,7 @@ describe('User Model', () => {
     expect(model).to.be.an('object');
   });
 
-  describe('the constructor', () => {
+  describe('constructor', () => {
     it('throws error with no parameters', () => {
       let error;
       let obj;
@@ -111,6 +111,14 @@ describe('User Model', () => {
       expect(model.getErrors().length).to.equal(0);
     });
 
+    it('should not replicate errors in error bag', () => {
+      model.name = '';
+      expect(model.getErrors()).with.lengthOf(1);
+      expect(model.getErrors()).with.lengthOf(1);
+      expect(model.getErrors()).with.lengthOf(1);
+      expect(model.getErrors()).with.lengthOf(1);
+    });
+
     it('should validate on re-validate when calling getErrors', () => {
       model.name  = '';
       model.email = '';
@@ -197,7 +205,7 @@ describe('User Model', () => {
     describe('invalid password', () => {
       const length = 'El campo Clave tiene que estar entre  3 -  32.';
 
-      it('should have errors on string length less 3', () => {
+      it('should have errors on string length less than 3', () => {
         model.password = '1';
         const array    = model.getErrors();
 
@@ -232,5 +240,73 @@ describe('User Model', () => {
     model.password = 'someRandomString';
 
     expect(model.password.length).to.equal(60);
+  });
+
+  describe('Validation rules attribute', () => {
+    beforeEach(() => {
+      model = UserModel.getNewInstance('user', 'user@user.us', 'test');
+    });
+    [
+      {name: 'array', value: []},
+      {name: 'empty object', value: {}},
+      {name: 'integer', value: 1},
+      {name: 'boolean', value: true},
+      {name: 'string', value: 'string'},
+      {name: 'incomplete object', value: {foo: 'bar', name: 'required'}},
+      {
+        name: 'complete object with invalid values',
+        value: {name: 'required', email: true, password: 1}
+      }
+    ].forEach(type => {
+      it(`should throw error when ${type.name} is given`, () => {
+        let error;
+
+        try {
+          model.validationRules = type.value;
+        } catch (err) {
+          error = err;
+        }
+
+        expect(error).to.be.instanceof(TypeError);
+      });
+    });
+
+    it('should allow to change the rules if object if valid', () => {
+      model.validationRules = {name: 'required', email: 'required', password: 'required'};
+
+      expect(model.validationRules).to.have.all.keys(
+        {name: 'required', email: 'required', password: 'required'}
+      );
+    });
+
+    it('should reset after model validates', () => {
+      model.validationRules = {name: 'required', email: 'required', password: 'required'};
+      expect(model.isValid()).to.be.true;
+      expect(model.validationRules).to.deep.equal(model.defaultValidationRules);
+    });
+  });
+
+  describe('hasErrors()', () => {
+    beforeEach(() => {
+      model._validated = true;
+    });
+    it('should be false when no errors exist', () => {
+      expect(model.hasErrors()).to.be.false;
+    });
+
+    it('should be true when errors exist', () => {
+      model._errors = [1, 2, 3];
+      expect(model.hasErrors()).to.be.true;
+    });
+  });
+
+  describe('isValid()', () => {
+    beforeEach(() => {
+      model._validated = true;
+    });
+    it('should be the inverse of hasErrors()', () => {
+      expect(model.isValid()).to.be.true;
+      expect(model.hasErrors()).to.be.false;
+    });
   });
 });

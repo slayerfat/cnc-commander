@@ -110,7 +110,7 @@ export class AbstractModel {
    * @returns {boolean}
    */
   isValid() {
-    return this.hasErrors();
+    return !this.hasErrors();
   }
 
   /**
