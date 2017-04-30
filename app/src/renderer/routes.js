@@ -6,13 +6,8 @@ export default [
   },
   {
     path: '/users',
-    name: 'users.index',
+    name: 'users',
     component: require('components/views/user/UserIndex.vue')
-  },
-  {
-    path: '/users/create',
-    name: 'users.create',
-    component: require('components/views/user/UserCreate.vue')
   },
   {
     path: '*',
