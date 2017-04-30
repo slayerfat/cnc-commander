@@ -32,7 +32,7 @@ export default (name = 'test', adapter = 'idb') => {
   db.setSchema(schemas);
 
   db.createIndex({
-    index: {fields: ['data.email', 'data.name']}
+    index: {fields: ['data.name', 'data.email']}
   });
 
   return db;

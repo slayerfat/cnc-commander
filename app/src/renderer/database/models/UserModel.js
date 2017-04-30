@@ -203,7 +203,7 @@ export class UserModel extends AbstractModel {
    * @returns {{name: string, email: string, password: string}}
    */
   get defaultValidationRules() {
-    return this._defaultValidationRules;
+    return Object.assign({}, this._defaultValidationRules);
   }
 
   /**

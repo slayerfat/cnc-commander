@@ -92,8 +92,8 @@ export class UserRepository extends AbstractRepository {
    * @returns {Promise}
    */
   create(name, email, password) {
-    const user = UserModel.getNewInstance(name, email, password);
-    const currentRules = user.validationRules;
+    const user           = UserModel.getNewInstance(name, email, password);
+    const currentRules   = user.defaultValidationRules;
     currentRules.password += '|required';
     user.validationRules = currentRules;
 
@@ -116,7 +116,7 @@ export class UserRepository extends AbstractRepository {
         }
 
         reject(new Error('Unknown result set from database.'));
-      });
+      }).catch(err => reject(err));
     });
   }
 
@@ -220,7 +220,7 @@ export class UserRepository extends AbstractRepository {
       if (results.users.length === 1 && options.withUser === true) {
         return Promise.resolve(results.users);
       } else if (results.users.length > 0) {
-        Promise.resolve(true);
+        return Promise.resolve(true);
       }
 
       Promise.resolve(false);
