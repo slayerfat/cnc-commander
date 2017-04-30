@@ -1,6 +1,6 @@
 # CNC Commander
 
-> An electron-vue project
+[![Build Status](https://travis-ci.org/slayerfat/cnc-commander.svg?branch=master)](https://travis-ci.org/slayerfat/cnc-commander)
 
 ## Validation
 
