@@ -309,4 +309,18 @@ describe('User Model', () => {
       expect(model.hasErrors()).to.be.false;
     });
   });
+
+  describe('password encryption', () => {
+    it('should encrypt the password', () => {
+      expect(UserModel.encryptPassword('test')).to.be.a('string').with.lengthOf(60);
+    });
+
+    it('should check if password matches', () => {
+      const hash        = UserModel.encryptPassword('test');
+      const anotherHash = UserModel.encryptPassword('another');
+
+      expect(UserModel.isPasswordMatch('test', hash)).to.be.true;
+      expect(UserModel.isPasswordMatch('test', anotherHash)).to.be.false;
+    });
+  });
 });
