@@ -5,7 +5,7 @@ const path = require('path');
 let config = {
   // Name of electron app
   // Will be used in production builds
-  name: 'vue-my-project',
+  name: 'cnc-commander',
 
   // Use ESLint (extends `standard`)
   // Further changes can be made in `.eslintrc.js`
@@ -15,9 +15,9 @@ let config = {
   port: 9080,
 
   // electron-packager options
-  // Docs: https://simulatedgreg.gitbooks.io/electron-vue/content/docs/building_your_app.html
+  // Docs: https://simulatedgreg.gitbooks.io/electron-vue/content/en/building_your_app.html
   building: {
-    arch: 'x64',
+    arch: process.env.PLATFORM_ARCH || 'ia32',
     asar: true,
     dir: path.join(__dirname, 'app'),
     icon: path.join(__dirname, 'app/icons/icon'),

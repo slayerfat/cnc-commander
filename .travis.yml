@@ -1,0 +1,35 @@
+language: node_js
+
+node_js:
+  - "6"
+
+cache:
+  directories:
+    - node_modules
+    - app/node_modules
+    - $HOME/.electron
+    - $HOME/.cache
+
+env:
+  - CXX=g++-4.8
+
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - g++-4.8
+    - xvfb
+
+install:
+  - export DISPLAY=':99.0'
+  - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+  - npm install
+
+script:
+  - npm test
+
+notifications:
+  email:
+    on_success: never
+    on_failure: change

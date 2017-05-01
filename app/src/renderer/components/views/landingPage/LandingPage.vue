@@ -3,7 +3,7 @@
 </template>
 
 <script>
-  import LandingHero from './LandingPageView/LandingHero';
+  import LandingHero from './components/LandingHero';
 
   export default {
     components: {

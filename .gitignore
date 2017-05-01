@@ -4,6 +4,8 @@ app/dist/index.html
 app/dist/main.js
 app/dist/renderer.js
 app/dist/styles.css
+app/dist/fonts/
+app/dist/imgs/
 builds/*
 coverage
 node_modules/

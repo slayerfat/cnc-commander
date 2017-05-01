@@ -1,17 +1,34 @@
 {
-  "name": "vue-my-project",
+  "name": "cnc-commander",
   "version": "0.0.0",
   "description": "An electron-vue project",
   "main": "./dist/main.js",
   "dependencies": {
     "babel-runtime": "^6.23.0",
+    "bcryptjs": "^2.4.3",
     "bulma": "^0.4.0",
+    "font-awesome": "^4.7.0",
+    "pouchdb": "^6.2.0",
+    "pouchdb-adapter-idb": "^6.2.0",
+    "pouchdb-adapter-memory": "^6.2.0",
+    "pouchdb-find": "^6.2.0",
+    "relational-pouch": "^1.4.5",
+    "sanitize-html": "^1.14.1",
+    "validatorjs": "^3.12.0",
+    "vee-validate": "^2.0.0-beta.25",
     "vue": "^2.1.10",
     "vue-electron": "^1.0.6",
     "vue-resource": "^1.0.3",
     "vue-router": "^2.1.2",
     "vuex": "^2.1.1"
   },
-  "devDependencies": {},
-  "author": "Alejandro Granadillo <slayerfat@gmail.com>"
+  "devDependencies": {
+    "electron-rebuild": "^1.5.7"
+  },
+  "scripts": {
+    "postinstall": "electron-rebuild"
+  },
+  "author": "Alejandro Granadillo <slayerfat@gmail.com>",
+  "repository": "https://github.com/slayerfat/cnc-commander",
+  "license": "MIT"
 }
