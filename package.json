@@ -24,7 +24,7 @@
     "unit": "cross-env BABEL_ENV=testing-unit karma start test/unit/karma.conf.js",
     "postinstall": "npm run lint:fix && cd app && npm install"
   },
-  "author": "Greg Holguin <simulatedgreg@gmail.com>",
+  "author": "Alejandro Granadillo <slayerfat@gmail.com>",
   "license": "MIT",
   "devDependencies": {
     "babel-core": "^6.8.0",
@@ -83,5 +83,6 @@
     "webpack-dev-server": "^2.3.0",
     "webpack-merge": "^2.4.0"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "repository": "https://github.com/slayerfat/cnc-commander"
 }

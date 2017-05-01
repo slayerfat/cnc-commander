@@ -28,6 +28,10 @@ Inside the .babelrc file (or put in package.json)
 }
 ```
 
+### TravisCI setup
+
+The setup was possible thanks to http://rhysd.hatenablog.com/entry/2015/08/07/181418 and https://electron.atom.io/docs/tutorial/testing-on-headless-ci/
+
 ## Build Setup
 
 ``` bash
