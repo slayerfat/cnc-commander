@@ -24,7 +24,7 @@
     "vuex": "^2.1.1"
   },
   "scripts": {
-    "postinstall": "electron-rebuild pouchdb"
+    "postinstall": "electron-rebuild"
   },
   "author": "Alejandro Granadillo <slayerfat@gmail.com>",
   "repository": "https://github.com/slayerfat/cnc-commander",
